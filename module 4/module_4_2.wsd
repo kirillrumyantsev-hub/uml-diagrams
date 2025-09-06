@@ -1,0 +1,34 @@
+@startuml
+
+actor           "Покупатель"        as  user
+participant     "WebUI"             as  web
+participant     "Order Controller"  as  manager
+participant     "Payment Service"   as  billing
+database        "Database"          as  db
+
+group Оформление заказа
+    user    ->  web     :запрос на оформление заказа
+    activate web
+    web     ->  manager :передача данных заказа
+    activate manager
+    manager ->  db      :сохранение заказа
+    activate db
+    db      --> manager :confirmation
+    deactivate db
+end
+
+group Оплата
+    manager ->  billing :проведение платежа
+    activate billing
+    billing ->  manager :подтверждение транзакции
+    deactivate billing
+end
+
+group Подтверждение
+    manager ->  web     :подтверждение заказа
+    deactivate manager
+    web     ->  user    :детали заказа
+    deactivate web
+end
+
+@enduml
