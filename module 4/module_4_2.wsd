@@ -4,7 +4,7 @@ actor           "Покупатель"        as  user
 participant     "WebUI"             as  web
 participant     "Order Controller"  as  manager
 participant     "Payment Service"   as  billing
-database        "Database"          as  db
+database        "Database"          as  db #lightYellow
 
 group Оформление заказа
     user    ->  web     :запрос на оформление заказа
@@ -13,21 +13,25 @@ group Оформление заказа
     activate manager
     manager ->  db      :сохранение заказа
     activate db
-    db      --> manager :confirmation
+    db      --[#LightBlue]> manager :confirmation
     deactivate db
 end
 
 group Оплата
     manager ->  billing :проведение платежа
     activate billing
-    billing ->  manager :подтверждение транзакции
-    deactivate billing
-end
+    alt
+        billing -[#green]>  manager :подтверждение транзакции
+        else
+        billing -[#red]>  manager :ошибка оплаты
+        deactivate billing
+    end
+    end
 
 group Подтверждение
-    manager ->  web     :подтверждение заказа
+    manager -[#green]>  web     :подтверждение заказа
     deactivate manager
-    web     ->  user    :детали заказа
+    web     -[#green]>  user    :детали заказа
     deactivate web
 end
 
