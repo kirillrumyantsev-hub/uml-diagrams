@@ -1,0 +1,32 @@
+@startuml
+class PaymentManager {
+    
+}
+
+abstract Payment {
+  - amount
+  - paymentDate
+  - transactionID
+  processPayment()
+}
+
+class CashPayment {
+  + cashProvided
+  + change
+}
+
+class CardPayment {
+  + cardNumber
+  + cardHolder
+  + cardExpirationDate
+  + validationType
+}
+
+
+
+PaymentManager <|-- Payment
+Payment <|-- CashPayment
+Payment <|-- CardPayment
+
+
+@enduml
