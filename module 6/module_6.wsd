@@ -1,6 +1,6 @@
 @startuml
 class PaymentManager {
-    
+    processAllPayments()
 }
 
 abstract Payment {
@@ -22,11 +22,8 @@ class CardPayment {
   + validationType
 }
 
-
-
 PaymentManager <|-- Payment
 Payment <|-- CashPayment
 Payment <|-- CardPayment
-
 
 @enduml
