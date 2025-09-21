@@ -1,29 +1,99 @@
 @startuml
-class PaymentManager {
-    processAllPayments()
+
+class User {
+    - userId : Integer
+    - profile <User Profile> : String
+    + getuserId() : String
 }
 
-abstract Payment {
-  - amount
-  - paymentDate
-  - transactionID
-  processPayment()
+class Profile {
+    - profileId : Integer
+    - bio : String
+    - avatarURL : String
+    + getProfileSummary() : String
 }
 
-class CashPayment {
-  + cashProvided
-  + change
+class PaymentProcessor {
+    + processPayment() : Boolean
 }
 
-class CardPayment {
-  + cardNumber
-  + cardHolder
-  + cardExpirationDate
-  + validationType
+class Student {
+    - studentId : Integer
+    - name : String
 }
 
-PaymentManager <|-- Payment
-Payment <|-- CashPayment
-Payment <|-- CardPayment
+class Enrollment {
+    - enrollmentDate : Date 
+    - grade : String
+}
+
+class Course {
+    - courseId : Integer
+    - courseName : String
+}
+
+class Department {
+    - departmentId : String
+    - departmentName : String
+    + getDepartmentName() : String
+}
+
+class Manager {
+    - bonus : Double
+    + getManagerInfo : String
+}
+
+class Room {
+    - roomId : Integer
+    - roomName : String
+}
+
+class House {
+    - houseId : Integer
+    - adress : String
+}
+
+class Employee {
+    - employeeId : String
+    - employeeName : String
+    - department <<referense>> Department
+    + getEmployeeInfo() : String
+}
+
+class Item {
+    - itemId : Integer
+    - ItemName : String
+    - price : Double
+}
+
+class Order {
+    - orderId : Integer
+    - orderDate : Date 
+    - items : List<items>
+}
+
+class Customer {
+    - customerId : Integer
+    - name : String
+    - orders : List<orders>
+}
+
+User <-- Customer : Клиент имеет учетку\n(ассоциация, связь между модулями)
+Profile "0..1"<--"1" User : содержит профиль\n(ассоциация, 0..1)
+User <|-- Student : Наследование\n(подтип пользователя)
+Student "1.."--"0..*" Enrollment : Студент зачисляется на курсы\n(ассоцитация, 1..*)
+Enrollment "1"--"1" Course : Зачесление относится к конкретному курсу\n(ассоциация 1)
+Department <-- Course : Курс предложен отделом\n(ассоциация, связь) 
+Order "0..*"--"1" Customer : Клиента размещает заказы\n(ассоциация, 0..*)
+Item "1..*"--*"1" Order : Заказ сожержит элементы\n (композиция, 1..*)
+Employee -- Customer
+Employee "1"<--"0..*" Order : Заказ обрабатывается сотрудником\n(ассоциация, 0..1)
+Manager --|> Employee : Наследование\n(менеджер - подтип сотрудника)
+Department "1"<|--"1" Employee : Сотрудник принадлежит департаменту\n(ассоциация, обязательная связь)
+Department "1"<--"1" Manager : Мэнеджер управляет отделом\n(ассоциация, роль)
+House "0..1"<--"1" Employee : Сотрудник владеет домом\n(ассоциация, опционально, 0..1)
+Room "1..*"--*"1" House : Дом состоит из комнат\n(композиция, 1..*)
+PaymentProcessor <.. Order : Заказ использует процессор платежей\n(зависимость)
+PaymentProcessor <.. User : Пользователь инициирует платеж\n(зависимость)
 
 @enduml
